@@ -32,6 +32,10 @@ def computePrice(df_km, df_pr) -> dict:
         # diff : {diff}""")
         return diff
 
+    def returnThetas() -> list:
+        return [theta0, theta1]
+
     return {"estimatePriceLearning": estimatePriceLearning,
             "updateThetas": updateThetas,
-            "estimatePrice": estimatePrice}
+            "estimatePrice": estimatePrice,
+            "returnThetas": returnThetas}

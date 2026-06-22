@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+from utils import load, isintcompatible
 
 
 def visualise(df: pd.DataFrame, dfreg: pd.DataFrame):
@@ -29,13 +30,30 @@ def visualise(df: pd.DataFrame, dfreg: pd.DataFrame):
         print(f"Error: {e}")
 
 
-def algorithm_precision(df: pd.DataFrame, func: dict):
-    """Compute the R-squared coefficient of determination for the model."""
-    mean = sum(df['price']) / df.shape[0]
-    err_sqrd = [(df['price'][i] - func['estimatePrice'](df['km'][i]))**2
-                for i in range(df.shape[0])]
-    numerator = sum(err_sqrd)
-    mean_sqrd = [(pr - mean)**2 for pr in df['price']]
-    denominator = sum(mean_sqrd)
+def estimatePrice(mileage, theta0, theta1) -> float:
+    return theta0 + (theta1 * mileage)
 
-    return 1 - numerator / denominator
+
+def main():
+    """Main"""
+    df = load("data.csv")
+    theta0 = 0
+    theta1 = 0
+    try:
+        df_t = pd.read_csv("learning.csv")
+    except Exception:
+        return
+    theta0 = df_t['theta0'][0]
+    theta1 = df_t["theta1"][0]
+    if not isintcompatible(theta0) or not isintcompatible(theta1):
+        print("Invalid theta")
+        return
+
+    df_km = [min(df['km']), max(df['km'])]
+    df_pr = [estimatePrice(km, theta0, theta1) for km in df_km]
+    dict_df = pd.DataFrame({'km': df_km, "price": df_pr})
+    visualise(df, dict_df)
+
+
+if __name__ == "__main__":
+    main()
