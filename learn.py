@@ -19,21 +19,27 @@ def algorithm_precision(df: pd.DataFrame, func: dict):
 
 def main():
     """Main"""
-    df = load("data.csv")
-    func = computePrice(df['km'], df['price'])
+    try:
+        df = load("data.csv")
+        if df is None:
+            return
+        func = computePrice(df['km'], df['price'])
 
-    line = visualise_init(df)
-    learning(func, df, line)
-    visualise_end()
+        line = visualise_init(df)
+        learning(func, df, line)
+        visualise_end()
 
-    R = algorithm_precision(df, func)
-    print("Algorithm Precision R :", R)
+        R = algorithm_precision(df, func)
+        print("Algorithm Precision R :", R)
 
-    real_theta0 = func['estimatePrice'](0)
-    real_theta1 = func['estimatePrice'](1) - func['estimatePrice'](0)
+        real_theta0 = func['estimatePrice'](0)
+        real_theta1 = func['estimatePrice'](1) - func['estimatePrice'](0)
 
-    df = pd.DataFrame({'theta0': [real_theta0], 'theta1': [real_theta1]})
-    df.to_csv("learning.csv", index=False)
+        df = pd.DataFrame({'theta0': [real_theta0], 'theta1': [real_theta1]})
+        df.to_csv("learning.csv", index=False)
+    except Exception as e:
+        print(f"Error : {e}")
+    return
 
 
 if __name__ == "__main__":

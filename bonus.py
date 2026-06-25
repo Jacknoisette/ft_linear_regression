@@ -36,23 +36,34 @@ def estimatePrice(mileage, theta0, theta1) -> float:
 
 def main():
     """Main"""
-    df = load("data.csv")
-    theta0 = 0
-    theta1 = 0
     try:
-        df_t = pd.read_csv("learning.csv")
-    except Exception:
-        return
-    theta0 = df_t['theta0'][0]
-    theta1 = df_t["theta1"][0]
-    if not isintcompatible(theta0) or not isintcompatible(theta1):
-        print("Invalid theta")
-        return
+        df = load("data.csv")
+        if df is None:
+            return
+        theta0 = 0
+        theta1 = 0
+        try:
+            df_t = pd.read_csv("learning.csv")
+        except Exception:
+            print("learning.csv don't exist")
+            return
+        try:
+            theta0 = df_t['theta0'][0]
+            theta1 = df_t['theta1'][0]
+        except Exception as e:
+            print(f"Error : {e} doesn't exist in learning.csv")
+            return None
+        if not isintcompatible(theta0) or not isintcompatible(theta1):
+            print("Invalid theta")
+            return
 
-    df_km = [min(df['km']), max(df['km'])]
-    df_pr = [estimatePrice(km, theta0, theta1) for km in df_km]
-    dict_df = pd.DataFrame({'km': df_km, "price": df_pr})
-    visualise(df, dict_df)
+        df_km = [min(df['km']), max(df['km'])]
+        df_pr = [estimatePrice(km, theta0, theta1) for km in df_km]
+        dict_df = pd.DataFrame({'km': df_km, "price": df_pr})
+        visualise(df, dict_df)
+    except Exception as e:
+        print(f"Error : {e}")
+    return
 
 
 if __name__ == "__main__":

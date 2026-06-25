@@ -17,7 +17,8 @@ def load(path: str) -> pd.DataFrame:
 
 def isintcompatible(value) -> bool:
     try:
-        int(value)
+        if (int(value) < 0):
+            return False
         return True
     except (ValueError, TypeError):
         return False
